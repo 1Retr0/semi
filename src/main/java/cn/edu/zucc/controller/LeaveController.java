@@ -1,8 +1,8 @@
 package cn.edu.zucc.controller;
 
 import cn.edu.zucc.common.R;
-import cn.edu.zucc.common.Role;
-import cn.edu.zucc.common.UserLoginToken;
+import cn.edu.zucc.Annotation.Role;
+import cn.edu.zucc.Annotation.UserLoginToken;
 import cn.edu.zucc.domain.entity.Leave;
 import cn.edu.zucc.service.LeaveService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,14 @@ public class LeaveController {
     @Autowired
     LeaveService leaveService;
 
+    @Role("admin")
     @UserLoginToken
     @RequestMapping(value="/", method = RequestMethod.GET) //所有用户的所有请假列表（限管理员）
     public R<List<Leave>> getLists() {
         return R.data(leaveService.getAllLists());
     }
 
+    @Role("admin")
     @UserLoginToken
     @RequestMapping(value="/Pending", method = RequestMethod.GET) //所有用户的发起请假列表（限管理员）
     public R<List<Leave>> getAllInitiatingList() {
@@ -38,7 +40,6 @@ public class LeaveController {
     @UserLoginToken
     @RequestMapping(value="/create", method = RequestMethod.POST) //发起请假
     public R<String> postLeave(@Valid @ModelAttribute Leave leave) {
-        leaveService.create(leave);
         return R.success("success");
     }
 
@@ -52,5 +53,4 @@ public class LeaveController {
         leaveService.approval(leave);
         return R.success("success");
     }
-
 }

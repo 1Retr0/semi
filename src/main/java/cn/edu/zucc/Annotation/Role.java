@@ -1,4 +1,4 @@
-package cn.edu.zucc.common;
+package cn.edu.zucc.Annotation;
 
 
 import java.lang.annotation.ElementType;

@@ -1,5 +1,8 @@
 package cn.edu.zucc.controller;
 
+import cn.edu.zucc.Annotation.PassToken;
+import cn.edu.zucc.Annotation.Role;
+import cn.edu.zucc.Annotation.UserLoginToken;
 import cn.edu.zucc.common.*;
 import cn.edu.zucc.domain.entity.User;
 import cn.edu.zucc.service.UserService;
@@ -23,6 +26,7 @@ public class UserJPAController {
     @UserLoginToken
     @RequestMapping(value="/", method = RequestMethod.GET)
     public R<List<User>> getUserList() {
+        System.out.println("a");
         return R.data(service.getAllUsers());
     }
 
@@ -61,11 +65,14 @@ public class UserJPAController {
     @PassToken
     @RequestMapping(value="/Login", method = RequestMethod.POST)
     public R<String> loginUser(@RequestParam String name, @RequestParam String password) {
-        User user=service.getUser(name);
-        if(user == null ) {
-            return R.fail("用户不存在");
-        }
-        return user.getPassword().equals(HashKit.md5(password+user.getSalt()))?R.Loginsuccess(user):R.fail("密码错误");
+        User user=service.getUser(name, password);
+        return user == null?R.fail("用户不存在或密码错误"):R.Loginsuccess(user);
+//        User user=service.getUser(name);
+//        if(user == null ) {
+//            return R.fail("用户不存在");
+//        }
+//
+//        return user.getPassword().equals(HashKit.md5(password+user.getSalt()))?R.Loginsuccess(user):R.fail("密码错误");
     }
 
     @UserLoginToken

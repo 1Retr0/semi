@@ -1,11 +1,15 @@
 package cn.edu.zucc.common;
 
+import cn.edu.zucc.Annotation.PassToken;
+import cn.edu.zucc.Annotation.Role;
+import cn.edu.zucc.Annotation.UserLoginToken;
 import cn.edu.zucc.domain.entity.User;
 import cn.edu.zucc.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,11 +23,15 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     UserService userService;
 
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest,
                              HttpServletResponse httpServletResponse,
                              Object object) throws Exception {
         String token = httpServletRequest.getHeader("token");
+        String username = httpServletRequest.getHeader("username");
+
+        System.out.println("aa");
         //如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
@@ -40,7 +48,12 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         if(method.isAnnotationPresent(Role.class)) {
            Role role = method.getAnnotation(Role.class);
-           if(role.value()!=null)
+           User user = userService.getUser(username);
+           System.out.println(role.value());
+           System.out.println(user.getRole());
+           if(!role.value().equals(user.getRole())) {
+               throw new InvaildClientException("用户没有该权限");
+           }
            return true;
         }
 

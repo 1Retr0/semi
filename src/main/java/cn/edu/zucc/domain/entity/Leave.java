@@ -1,6 +1,6 @@
 package cn.edu.zucc.domain.entity;
 
-import cn.edu.zucc.common.Date;
+import cn.edu.zucc.Annotation.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
