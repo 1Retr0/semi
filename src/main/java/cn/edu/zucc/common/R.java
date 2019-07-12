@@ -104,7 +104,6 @@ public class R<T> implements Serializable {
         JwtBuilder builder = Jwts.builder().setHeaderParam("type","JsonWebToken")
                 .claim("id", user.getId())
                 .claim("name", user.getName())
-                .claim("email", user.getEmail())
                 .signWith(io.jsonwebtoken.SignatureAlgorithm.HS512, KEY);
         long expMillis = System.currentTimeMillis() + 3600*1000*24;
         Date exp = new Date(expMillis);

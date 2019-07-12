@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>设置任务</title>
+    <script src="./jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.js"></script>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width: 100%;
+            height:100%;
+        }
+        body>div{
+            width: 100%;
+            height: 700px;
+            padding: 50px;
+            border: 1px solid #fff;
+            background: #fff;
+            border-radius: 5px;
+        }
+        body{
+            background:#eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 600px;
+            height: 500px;
+            border: 1px solid black;
+            margin:0px auto;
+        }
+        .form-group{
+            width:80%;
+            margin-bottom: 18px;
+        }
+        form>div:nth-child(3){
+            //display: flex;
+            width: 80%;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #e7e7e7;
+            background-color: #eee;
+        }
+        li {
+            float: right;
+        }
+        li a {
+            display: block;
+            color: #666;
+            text-align: center;
+            padding: 14px 18px;
+            text-decoration: none;
+            font-size:14px;
+        }
+        li a:hover:not(.active) {
+            color: white;
+            background-color: #4390c7;
+        }
+        li a.active {
+            color: white;
+        }
+
+        .footer{
+            height: 20px;
+            width: 100%;
+            background-color: rgba(255,255,255,0.2);
+            position: fixed;
+            bottom: 0;
+
+        }
+    </style>
+</head>
+<body>
+
+<div style="clear:both">
+    <div class="text" style="font-size:30px;text-align:center;">外包管理系统</div><br/>
+    <div>
+        <ul>
+            <li id="5"><a>查看任务</a></li>
+            <li id="4"><a>设置任务</a></li>
+            <li id="3"><a>新建开发人员</a></li>
+            <li id="2"><a>查看项目</a></li>
+            <li id="1"><a>承包项目</a></li>
+        </ul>
+    </div>
+    <br>
+    <form id="create">
+        <div class="text" style="font-size:20px;text-align:center;">设置任务</div>
+        <br/>
+        <div class="form-group">
+            <label for="project">所属项目</label>
+            <select id="project">
+                <option disabled selected value>请选择项目</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="pId">项目id</label>
+            <input type="pId" id="pId" style="border:0">
+        </div>
+        <div class="form-group">
+            <label for="name">任务名称</label>
+            <input type="text" id="name">
+        </div>
+        <div class="form-group">
+            <label for="content">开发内容</label>
+            <br/>
+            <textarea  id="content" style="width:400px;height:100px;" placeholder="请填写内容！"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="developer">分配人员</label>
+            <select id="developer">
+                <option selected value>请选择开发人员</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="estimate_pd">预计人天</label>
+            <input type="text" id="estimate_pd">
+        </div>
+        <div class="form-group">
+            <label for="start">开始时间</label>
+            <input type="date" id="start">
+        </div>
+        <div class="form-group">
+            <label for="state" >状态</label>
+            <input type="text" id="state" value="初始化" readonly=true size="6" >
+        </div>
+        <div style="text-align:center">
+            <button type="button" class="btn btn-default">确定</button>
+        </div>
+    </form>
+    <div class="footer"  style="text-align:left">
+        <label for="username">用户：</label>
+        <input type="text" id="username" style="border-style:none;BACKGROUND-COLOR: transparent;">
+    </div>
+</div>
+
+<script>
+    var storage = window.localStorage;
+    var contractor = storage.getItem("username");
+    document.getElementById("username").value = contractor;
+    $("#1").click( function() { window.location.href = 'contract'; });
+    $("#2").click( function() { window.location.href = 'adminCheck'; });
+    $("#3").click( function() { window.location.href = 'createDev'; });
+    $("#4").click( function() { window.location.href = 'createTask'; });
+    $("#5").click( function() { window.location.href = 'allot'; });
+    var storage = window.localStorage;//此处为赋值，方便后面调用。本地浏览器存储关闭浏览器不消失，还有一种是sessionStorage，关闭浏览器消失
+    $('button').eq(0).on('click',function(){ //给button绑定点击事件
+        if(document.getElementById("project").value == ""){
+            alert("所属项目为空！");
+            return false;
+        }
+        if(document.getElementById("name").value == ""){
+            alert("任务名为空！");
+            return false;
+        }
+        if(document.getElementById("content").value == ""){
+            alert("开发内容为空！");
+            return false;
+        }
+        if(document.getElementById("developer").value == ""){
+            alert("开发人员为空！");
+            return false;
+        }
+        if(document.getElementById("estimate_pd").value == ""){
+            alert("预计人天为空！");
+            return false;
+        }
+        if(document.getElementById("start").value == ""){
+            alert("开始时间为空！");
+            return false;
+        }
+        con();
+
+    });
+    function create() {
+        var jsonData = {project:document.getElementById("pId").value, name: $("#name").val(), content: $("#content").val(), developer:$("#developer").val(), estimate_pd: $("#estimate_pd").val(), start: $("#start").val(), state: state(), contractor: $("#username").val()}; //传输的用户名密码，字段名根据你们之前的接口自己修改
+        $.ajax({
+            type: "POST",  //传递的方法，有get和post，登录这种一般用post，因为get能在路径里看到账号和密码
+            async: true,//可不填，默认为true.异步执行，值为false就为同步
+            url: "/task/create",  //之前的实验写的接口
+            contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+            data: JSON.stringify(jsonData),  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+            dataType: "json",  //预估服务器返回的数据类型
+            success: function (data) {  //成功后执行的代码，data就是返回的数据
+                console.log(data);
+                window.location.href="createTask"
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        });
+    }
+    function state() {
+        var s;
+        if(document.getElementById("developer").value == ""){
+            s = "初始化";
+        }
+        else
+            s = "已分配";
+        return s;
+    }
+    function con() {
+        var message=confirm("确定要进行此操作吗?");
+        if(message==true)
+        {
+            create();
+            alert("提交成功");
+        }
+    }
+    $(function () {
+        $.ajax({
+            type:"get",
+            url:"/project/contracted/"+contractor,//访问后台去数据库查询select的选项
+            async: true,//可不填，默认为true.异步执行，值为false就为同步
+            contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+            data: {},  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+            dataType: "json",  //预估服务器返回的数据类型
+            success:function(data){
+                var unitObj=document.getElementById("project"); //页面上的<html:select>元素
+                if(data!=null){ //后台传回来的select选项
+                    for(var i in data.data){
+                        //遍历后台传回的结果，一项项往select中添加option
+                        unitObj.options.add(new Option(data.data[i].name));
+                        var id = data.data[i].id;
+                    }
+                }
+            },
+            error:function(){
+            }
+        })
+
+    });
+    $(function () {
+        $.ajax({
+            type:"get",
+            url:"/users/superior/"+contractor,//访问后台去数据库查询select的选项
+            async: true,//可不填，默认为true.异步执行，值为false就为同步
+            contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+            data: {},  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+            dataType: "json",  //预估服务器返回的数据类型
+            success:function(data){
+                var unitObj=document.getElementById("developer"); //页面上的<html:select>元素
+                if(data!=null){ //后台传回来的select选项
+                    for(var i in data.data){
+                        //遍历后台传回的结果，一项项往select中添加option
+                        unitObj.options.add(new Option(data.data[i].name));
+                    }
+                }
+            },
+            error:function(){
+            }
+        })
+
+    });
+    $("#project").change(function(){
+        $.ajax({
+            type:"get",
+            url:"/project/id/"+document.getElementById("project").value,//访问后台去数据库查询select的选项
+            async: true,//可不填，默认为true.异步执行，值为false就为同步
+            contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+            data: {},  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+            dataType: "json",  //预估服务器返回的数据类型
+            success:function(data){
+                console.log(data);
+                document.getElementById("pId").value = data.data.id;
+            },
+            error:function(){
+            }
+        });
+    });
+
+    $("#1").click( function() { window.location.href = 'contract'; });
+    $("#2").click( function() { window.location.href = 'adminCheck'; });
+    $("#3").click( function() { window.location.href = 'createDev'; });
+    $("#4").click( function() { window.location.href = 'createTask'; });
+    $("#5").click( function() { window.location.href = 'allot'; });
+</script>
+</body>
+</html>

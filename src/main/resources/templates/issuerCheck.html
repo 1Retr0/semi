@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>查看项目</title>
+    <script src="./jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.4.0/jquery.js"></script>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width: 100%;
+            height:100%;
+        }
+        body>div{
+            width: 100%;
+            height: 700px;
+            padding: 50px;
+            border: 1px solid #fff;
+            background: #fff;
+            border-radius: 5px;
+            align-items: center;
+        }
+        body{
+            background:#eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            /*height: 500px;*/
+            border: 1px solid black;
+        }
+        .form-group{
+            width:100%;
+        }
+        .form-1{
+            display: block;
+            width: 200px;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+        form>div:nth-child(3){
+        //display: flex;
+            width: 80%;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #e7e7e7;
+            background-color: #eee;
+        }
+        li {
+            float: right;
+        }
+        li a {
+            display: block;
+            color: #666;
+            text-align: center;
+            padding: 14px 18px;
+            text-decoration: none;
+            font-size:14px;
+        }
+        li a:hover:not(.active) {
+            color: white;
+            background-color: #4390c7;
+        }
+        li a.active {
+            color: white;
+        }
+
+        .footer{
+            /*height: 20px;*/
+            width: 100%;
+            background-color:rgba(255,255,255,0.2);
+            position: fixed;
+            bottom: 0;
+
+        }
+        .button {
+            background-color: #4390c7;
+            border: none;
+            color: white;
+            padding: 7px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+            margin: 1px 1px;
+            cursor: pointer;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            border-radius: 5px;
+        }
+        .button1:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+        .button2 {
+            background-color: white;
+            color: black;
+            border: 2px solid #008CBA;
+            font-size: 10px;
+        }
+
+        .button2:hover {
+            background-color: #008CBA;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<br>
+<div style="clear:both">
+    <div class="text" style="font-size:30px;text-align:center;">外包管理系统</div><br/>
+    <div>
+        <ul>
+            <li id="004"><a>验收项目</a></li>
+            <li id="003"><a>查看项目</a></li>
+            <li id="002"><a>发布项目</a></li>
+            <li id="001"><a>创建项目</a></li>
+        </ul>
+    </div>
+    <br>
+    <div class="text" style="font-size:20px;text-align:center;">项目列表</div>
+    <button type="button" id="search" class="button button1" style="float: right">搜索</button>
+    <input type="text" id="shuru" class="form-1" placeholder="请输入要查询的项目名称" style="float: right">
+
+    <table class="table table-bordered" id='tabletest'>
+        <tr>
+            <th>id</th>
+            <th>项目名称</th>
+            <th>项目说明</th>
+            <th>期望完成时间</th>
+            <th>状态</th>
+            <!--<th>预计人天</th>-->
+            <!--<th>实际人天</th>-->
+            <th>承包方</th>
+            <th>项目开发开始时间</th>
+            <th>项目开发结束时间</th>
+            <th>开发人数</th>
+            <th>任务详情</th>
+            <!--<th>实际人日</th>-->
+        </tr>
+    </table>
+    <div class="footer"  style="text-align:left">
+        <label for="username">用户：</label>
+        <input type="text" id="username" style="border-style:none;BACKGROUND-COLOR: transparent;">
+    </div>
+</div>
+
+<script>
+    var storage = window.localStorage;
+    var issuer = storage.getItem("username");
+    document.getElementById("username").value = issuer;
+    $("#search").click( function() {
+        storage.setItem("shuru", document.getElementById("shuru").value);
+        window.location.href = 'issuerCheck1';
+    });
+    $(function(){ //初始化后执行，比如之前点过记住密码
+    /*  向后端获取数据  */
+        $.ajax({
+            type:"GET",
+            url: "/project/"+issuer,  //之前的实验写的接口
+            contentType: 'application/json',
+            data:{},
+            dataType: "json",  //预估服务器返回的数据类型
+            success:function (data) {
+                for(var i in data.data) //data.data指的是数组，数组里是8个对象，i为数组的索引
+                {
+                    var tr;
+                    tr = '<td>' + data.data[i].id + '</td>' +
+                        '<td>' + data.data[i].name + '</td>' +
+                        '<td>' + data.data[i].description + '</td>' +
+                        '<td>' + data.data[i].expectation + '</td>' +
+                        '<td>' + data.data[i].state + '</td>' +
+                        '<td>' + data.data[i].contractor + '</td>' +
+                        '<td>' + data.data[i].start + '</td>' +
+                        '<td>' + data.data[i].end + '</td>' +
+                        '<td>' + '<input id="0' + data.data[i].id + '" readonly=true size="2" style="border:0">' + '</td>' +
+                        '<td><button class="btn btn-default" style="border: 1px solid #ccc" id="' + data.data[i].id + '" value="' + data.data[i].id + '" onclick="goDetail('+data.data[i].id+')" )>查看</button></td>';
+                    $("#tabletest").append('<tr>' + tr + '</tr>');
+                    total(data.data[i].id);
+                }
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        });
+
+    });
+    function goDetail(n){
+        $("#"+n).live('click',function(){
+            var id = document.getElementById(n).value;
+            storage.setItem("id", id);
+            window.location.href = 'taskCard';
+        })
+    }
+    function total(n){
+        $.ajax({
+            type:"GET",
+            url: "/task/total/"+n,  //之前的实验写的接口
+            contentType: 'application/json',
+            data:{},
+            dataType: "json",  //预估服务器返回的数据类型
+            success:function (data) {
+                document.getElementById("0"+n).value = data.data;
+                //alert(document.getElementById("0"+n));
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        });
+    }
+    $("#001").click( function() { window.location.href = 'create'; });
+    $("#002").click( function() { window.location.href = 'publish'; });
+    $("#003").click( function() { window.location.href = 'issuerCheck'; });
+    $("#004").click( function() { window.location.href = 'accept'; });
+</script>
+</body>
+</html>

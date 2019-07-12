@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>主页</title>
+    <script src="./jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.js"></script>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width: 100%;
+            height:100%;
+        }
+        body>div{
+            width: 100%;
+            height: 700px;
+            padding: 50px;
+            border: 1px solid #fff;
+            background: #fff;
+            border-radius: 5px;
+        }
+        body{
+            background:#eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 600px;
+            height: 500px;
+            border: 1px solid black;
+            margin:0px auto;
+        }
+        .form-group{
+            width:80%;
+            margin-bottom: 18px;
+        }
+        form>div:nth-child(3){
+        //display: flex;
+            width: 80%;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #e7e7e7;
+            background-color: #eee;
+        }
+        li {
+            float: right;
+        }
+        li a {
+            display: block;
+            color: #666;
+            text-align: center;
+            padding: 14px 18px;
+            text-decoration: none;
+            font-size:14px;
+        }
+        li a:hover:not(.active) {
+            color: white;
+            background-color: #4390c7;
+        }
+        li a.active {
+            color: white;
+        }
+
+        .footer{
+            /*height: 20px;*/
+            width: 100%;
+            background-color:rgba(255,255,255,0.2);
+            position: fixed;
+            bottom: 0;
+
+        }
+    </style>
+</head>
+<div style="clear:both">
+    <div class="text" style="font-size:30px;text-align:center;">外包管理系统</div>
+    <br/>
+    <div>
+        <ul>
+            <li id="5"><a>查看任务</a></li>
+            <li id="4"><a>设置任务</a></li>
+            <li id="3"><a>新建开发人员</a></li>
+            <li id="2"><a>查看项目</a></li>
+            <li id="1"><a>承包项目</a></li>
+        </ul>
+    </div>
+    <div class="footer"  style="text-align:left">
+        <label for="username">用户：</label>
+        <input type="text" id="username" style="border-style:none;BACKGROUND-COLOR: transparent;">
+    </div>
+</div>
+
+<script>
+    var storage = window.localStorage;//此处为赋值，方便后面调用。本地浏览器存储关闭浏览器不消失，还有一种是sessionStorage，关闭浏览器消失
+    var name = storage.getItem("username");
+    document.getElementById("username").value = name;
+    $(function(){ //初始化后执行，比如之前点过记住密码
+        //var storage.getItem("username"); //获取之前存储的值，存储方法在下面的ajax中，（）内输入value
+        //$('#remember').prop('checked','checked') //初始化将记住密码选中
+    });
+    $("#1").click( function() { window.location.href = 'contract'; });
+    $("#2").click( function() { window.location.href = 'adminCheck'; });
+    $("#3").click( function() { window.location.href = 'createDev'; });
+    $("#4").click( function() { window.location.href = 'createTask'; });
+    $("#5").click( function() { window.location.href = 'allot'; });
+</script>
+</body>
+
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>承包</title>
+    <script src="./jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.4.0/jquery.js"></script>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width: 100%;
+            height:100%;
+        }
+        body>div{
+            width: 100%;
+            height: 700px;
+            padding: 50px;
+            border: 1px solid #fff;
+            background: #fff;
+            border-radius: 5px;
+            align-items: center;
+        }
+        body{
+            background:#eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+            /*height: 500px;*/
+            border: 1px solid black;
+        }
+        .form-group{
+            width:80%;
+        }
+        form>div:nth-child(3){
+        //display: flex;
+            width: 80%;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #e7e7e7;
+            background-color: #eee;
+        }
+        li {
+            float: right;
+        }
+        li a {
+            display: block;
+            color: #666;
+            text-align: center;
+            padding: 14px 18px;
+            text-decoration: none;
+            font-size:14px;
+        }
+        li a:hover:not(.active) {
+            color: white;
+            background-color: #4390c7;
+        }
+        li a.active {
+            color: white;
+        }
+        .button {
+            background-color: #4390c7;
+            border: none;
+            color: white;
+            padding: 1px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 13px;
+            margin: 1px 1px;
+            cursor: pointer;
+            -webkit-transition-duration: 0.4s; /* Safari */
+            transition-duration: 0.4s;
+            border-radius: 5px;
+        }
+        .button1:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24),0 17px 50px 0 rgba(0,0,0,0.19);
+        }
+        .footer{
+            /*height: 20px;*/
+            width: 100%;
+            background-color:rgba(255,255,255,0.2);
+            position: fixed;
+            bottom: 0;
+
+        }
+    </style>
+</head>
+<body>
+<br>
+<div style="clear:both">
+    <div class="text" style="font-size:30px;text-align:center;">外包管理系统</div><br/>
+    <div>
+        <ul>
+            <li id="05"><a>查看任务</a></li>
+            <li id="04"><a>设置任务</a></li>
+            <li id="03"><a>新建开发人员</a></li>
+            <li id="02"><a>查看项目</a></li>
+            <li id="01"><a>承包项目</a></li>
+        </ul>
+    </div>
+    <br>
+    <div class="text" style="font-size:20px;text-align:center;">项目列表</div>
+    <table class="table table-bordered" id='tabletest'>
+        <tr>
+            <th>id</th>
+            <th>项目名称</th>
+            <th>项目说明</th>
+            <th>发包方</th>
+            <th>期望完成时间</th>
+            <th>状态</th>
+            <th>需求文件</th>
+            <th>承包</th>
+        </tr>
+    </table>
+    <div class="footer"  style="text-align:left">
+        <label for="username">用户：</label>
+        <input type="text" id="username" style="border-style:none;BACKGROUND-COLOR: transparent;">
+    </div>
+</div>
+
+<script>
+    var storage = window.localStorage;
+    var contractor = storage.getItem("username");
+    document.getElementById("username").value = contractor;
+    $(function(){ //初始化后执行，比如之前点过记住密码
+    /*  向后端获取数据  */
+        $.ajax({
+            type:"GET",
+            url: "/project/contract",  //之前的实验写的接口
+            contentType: 'application/json',
+            data:{},
+            dataType: "json",  //预估服务器返回的数据类型
+            success:function (data) {
+                for(var i in data.data) //data.data指的是数组，数组里是8个对象，i为数组的索引
+                {
+                    var tr;
+                    tr = '<td>' + data.data[i].id + '</td>' +
+                        '<td>' + data.data[i].name + '</td>' +
+                        '<td>' + data.data[i].description + '</td>' +
+                        '<td>' + data.data[i].issuer + '</td>' +
+                        '<td>' + data.data[i].expectation + '</td>' +
+                        '<td>' + data.data[i].state + '</td>' +
+                        '<td><a id="a' + data.data[i].id + '">' + data.data[i].name + '</a></td>' +
+                        '<td><button class="btn btn-default" style="border: 1px solid #ccc" id="' + data.data[i].id + '" value="'+data.data[i].state+'" onclick="con('+data.data[i].id+')">承包</button></td>';
+                    $("#tabletest").append('<tr>' + tr + '</tr>');
+                    document.getElementById("a" + data.data[i].id).href='file/'+data.data[i].name;
+                }
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        })
+    });
+
+    function contract(n){
+        $("#"+n).live('click',function(){
+            var jsonData = {state: "已承包", contractor: contractor, start:showtime()};
+            $.ajax({
+                type: "POST",  //传递的方法，有get和post，登录这种一般用post，因为get能在路径里看到账号和密码
+                async: true,//可不填，默认为true.异步执行，值为false就为同步
+                url: "/project/contract/"+n,  //之前的实验写的接口
+                contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+                data: JSON.stringify(jsonData),  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+                dataType: "json",  //预估服务器返回的数据类,
+                success: function (data) {  //成功后执行的代码，data就是返回的数据
+                    console.log(data);
+                    window.location.href="contract"
+                },
+                error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                    console.log(e);
+                }
+            });
+        })
+    }
+    function con(n) {
+        if (document.getElementById(n).value=="已承包"){
+            alert("项目已被承包！");
+        }
+        else
+        {
+            var message=confirm("确定要进行此操作吗?");
+            if(message==true)
+            {
+                contract(n);
+            }
+        }
+    }
+    function showtime() {
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = d.getMonth()+1;
+        var day = d.getDate();
+        var hour = d.getHours();
+        var minute = d.getMinutes();
+        //var time = year+"/"+((month<10)?"0":"")+month+"/"+((day<10)?"0":"")+day+" "+((hour<10)?"0":"")+hour+":"+((minute<10)?"0":"")+minute;
+        var time = year+"-"+((month<10)?"0":"")+month+"-"+((day<10)?"0":"")+day;
+        return time;
+    }
+
+    $("#01").click( function() { window.location.href = 'contract'; });
+    $("#02").click( function() { window.location.href = 'adminCheck'; });
+    $("#03").click( function() { window.location.href = 'createDev'; });
+    $("#04").click( function() { window.location.href = 'createTask'; });
+    $("#05").click( function() { window.location.href = 'allot'; });
+</script>
+</body>
+</html>

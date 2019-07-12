@@ -21,11 +21,17 @@ public class StudioDemoApplication {
         map.addAttribute("jreVersion", "v" + jreVersion);
         return "index";
     }
-    @RequestMapping("login")
+    @RequestMapping("/login")
     public String login(ModelMap map) {
         String jreVersion = System.getProperty("java.specification.version");
         map.addAttribute("jreVersion", "v" + jreVersion);
         return "login";
+    }
+    @RequestMapping("/detail")
+    public String detail(ModelMap map) {
+        String jreVersion = System.getProperty("java.specification.version");
+        map.addAttribute("jreVersion", "v" + jreVersion);
+        return "detail";
     }
     public static void main(String[] args) {
 		SpringApplication.run(StudioDemoApplication.class, args);

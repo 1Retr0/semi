@@ -30,8 +30,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                              Object object) throws Exception {
         String token = httpServletRequest.getHeader("token");
         String username = httpServletRequest.getHeader("username");
-
-        System.out.println("aa");
         //如果不是映射到方法直接通过
         if (!(object instanceof HandlerMethod)) {
             return true;
@@ -50,8 +48,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
            Role role = method.getAnnotation(Role.class);
            User user = userService.getUser(username);
            System.out.println(role.value());
-           System.out.println(user.getRole());
-           if(!role.value().equals(user.getRole())) {
+           System.out.println(user.getType());
+           if(!role.value().equals(user.getType())) {
                throw new InvaildClientException("用户没有该权限");
            }
            return true;

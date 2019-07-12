@@ -1,13 +1,10 @@
 package cn.edu.zucc.domain.entity;
 
-
-import org.hibernate.validator.constraints.Range;
-
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 
-@Entity
+@Entity(name = "user")
 public class User implements Serializable {
 
     @Id
@@ -15,15 +12,9 @@ public class User implements Serializable {
     private long id;
     @NotEmpty(message = "注解声明：用户名不能为空")
     private String name;
-    @Range(max=120,min=0)
-    private Integer age;
-    @Email(message = "邮件格式必须为***@***.***")
-    private String email;
     private String password;
-    private String salt;
-    private String role;
-
-
+    private String type;
+    private String superior;
 
 
     public long getId() {
@@ -42,22 +33,6 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public Integer getAge() {
-        return age;
-    }
-
-    public void setAge(Integer age) {
-        this.age = age;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPassword() {
         return password;
     }
@@ -66,20 +41,15 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public String getType() { return type; }
 
-    public String getSalt() {
-        return salt;
+    public void setType(String type) { this.type = type; }
+
+    public String getSuperior() {
+        return superior;
     }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
+    public void setSuperior(String superior) {
+        this.superior = superior;
     }
 }

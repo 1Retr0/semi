@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>发布</title>
+    <script src="./jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.js"></script>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width: 100%;
+            height:100%;
+        }
+        body>div{
+            width: 600px;
+            padding: 50px;
+            border: 1px solid #fff;
+            background: #fff;
+            border-radius: 5px;
+        }
+        body{
+            background:#eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+        }
+        .form-group{
+            width:80%;
+        }
+        form>div:nth-child(3){
+        //display: flex;
+            width: 80%;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="text" style="font-size:30px">项目信息</div>
+    <form id="detail">
+
+        <br/>
+        <br/>
+        <div class="form-group">
+            <label for="name">项目名称：</label>
+            <input type="text" id="name" readonly=true style="border:0">
+        </div>
+        <div class="form-group">
+            <label for="description">项目说明：</label>
+            <textarea id="description" style="width:350px;height:80px;" ></textarea>
+        </div>
+        <div class="form-group">
+            <label for="end">期望完成时间：</label>
+            <input type="text" id="end" readonly=true style="border:0">
+        </div>
+        <div class="form-group">
+            <label for="state" >状态：</label>
+            <input type="text" id="state" value="未审核" readonly=true size="6" style="border:0">
+        </div>
+        <div class="form-group">
+            <label for="doc" >需求文档：</label>
+            <a Id="aa"> <input type="text" id="doc" readonly=true style="border:0"></a>
+        </div>
+        <div>
+            <button type="button" id="pub" value="已发布" class="btn btn-default">发布</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button type="button" id="back" class="btn btn-default">返回</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    var storage = window.localStorage;
+    var id = storage.getItem("id");
+    $("#pub").click( function() {
+        con();
+    });
+    $("#back").click( function() {
+        window.location.href="publish"
+    });
+    $(function(){ //初始化后执行，比如之前点过记住密码
+        /*  向后端获取数据  */
+        $.ajax({
+            type:"GET",
+            url: "/project/1/"+id,  //之前的实验写的接口
+            contentType: 'application/json',
+            data:{},
+            dataType: "json",  //预估服务器返回的数据类型
+            async:true,
+            success:function (data) {
+                document.getElementById("name").value = data.data.name;
+                document.getElementById("description").value = data.data.description;
+                document.getElementById("end").value = data.data.expectation;
+                document.getElementById("state").value = data.data.state;
+                document.getElementById("aa").href='file/'+data.data.name;
+                document.getElementById("doc").value = data.data.name;
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        })
+    });
+    function publish() {
+        var jsonData = {state: $("#pub").val(), description: document.getElementById("description").value}; //传输状态，字段名根据你们之前的接口自己修改
+        $.ajax({
+            type: "POST",  //传递的方法，有get和post，登录这种一般用post，因为get能在路径里看到账号和密码
+            async: true,//可不填，默认为true.异步执行，值为false就为同步
+            url: "/project/publish/"+id,  //之前的实验写的接口
+            contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+            data: JSON.stringify(jsonData),  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+            dataType: "json",  //预估服务器返回的数据类,
+            success: function (data) {  //成功后执行的代码，data就是返回的数据
+                console.log(data);
+                window.location.href="publish"
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        });
+    }
+    function con() {
+        var message=confirm("确定要进行此操作吗?");
+        if(message==true)
+        {
+            publish();
+        }
+    }
+
+</script>
+</body>
+</html>

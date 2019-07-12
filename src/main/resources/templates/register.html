@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>注册账户</title>
+    <script src="./jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="./bootstrap.min.css">
+    <script src="./bootstrap.js"></script>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width: 100%;
+            height:100%;
+        }
+        body>div{
+            width: 350px;
+            height: 400px;
+            padding: 50px;
+            border: 1px solid #fff;
+            background: #fff;
+            border-radius: 20px;
+        }
+        body{
+            background:#eee;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            width: 100%;
+        }
+        .form-group{
+            width:100%;
+        }
+        form>div:nth-child(3){
+            width: 100%;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <form id="register">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" id="username" placeholder="用户名">
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password" placeholder="密码">
+        </div>
+        <div class="form-group">
+            <label for="password">确认密码</label>
+            <br/>
+            <input type="password" class="form-control" id="password2" placeholder="密码">
+        </div>
+        <div class="form-group">
+            <label for="type">用户类型</label>
+            <select id="type">
+                <option disabled selected value>请选择类型</option>
+                <option value="issuer">发包</option>
+                <option value="admin">承包</option>
+            </select>
+            </label>
+        </div>
+
+        <div>
+            <button type="button" id="confirm" class="btn btn-default">注册</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" id="back" class="btn btn-default">返回</button>
+        </div>
+    </form>
+</div>
+<script>
+    $("#confirm").click( function() {
+        if(document.getElementById("username").value == ""){
+            alert("用户名为空！");
+            return false;
+        }
+        if(document.getElementById("password").value == ""){
+            alert("密码为空！");
+            return false;
+        }
+        if(document.getElementById("password").value !== document.getElementById("password2").value){
+            alert("两次输入的密码不同，请重新输入！");
+        }
+        if(document.getElementById("type").value == ""){
+            alert("用户类型为空！");
+            return false;
+        }
+        else{
+            create();
+            alert("注册成功！")
+        }
+    });
+    $("#back").click( function() {
+        window.location.href = 'login';
+    });
+    function create() {
+        var jsonData = {name: $("#username").val(), password: $("#password").val(), type: $("#type").val()}; //传输的用户名密码，字段名根据你们之前的接口自己修改
+        $.ajax({
+            type: "POST",  //传递的方法，有get和post，登录这种一般用post，因为get能在路径里看到账号和密码
+            async: true,//可不填，默认为true.异步执行，值为false就为同步
+            url: "/users/register",  //之前的实验写的接口
+            contentType: 'application/json',  //也可不填，默认值为application/x-www-form-urlencoded;，适用于大部分情况，传给服务器的编码类型
+            data: JSON.stringify(jsonData),  //上传的数据,因为会自动转成字符串类型，json对象会乱码导致传输失败，所以先手动转成字符串类型
+            dataType: "json",  //预估服务器返回的数据类型
+
+            success: function (data) {  //成功后执行的代码，data就是返回的数据
+                console.log(data);
+                //window.location.href= window.location.host + '/';//将当前路径修改，通过将域名和跳转路径相结合实现页面跳转
+                //window.location.href = 'create';
+            },
+            error: function (e) {  //失败后执行的代码，一般http状态码不是200的都是执行这个，e类似成功的data，字段名可以随便改，只要保持统一就行
+                console.log(e);
+            }
+        });
+    }
+</script>
+</body>
+</html>

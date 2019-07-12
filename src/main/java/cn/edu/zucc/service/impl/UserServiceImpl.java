@@ -4,8 +4,6 @@ import cn.edu.zucc.domain.dao.UserRepository;
 import cn.edu.zucc.domain.entity.User;
 import cn.edu.zucc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -19,22 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Override
-    @CachePut(value = "user", key = "#user.id")
-    public void create(User user) {
-        userRepository.save(user);
-    }
-
-    @Override
-    @CachePut(value = "user", key = "#user.id")
-    public void update(User user) {
-        userRepository.save(user);
-    }
-
-    @Override
-    @CacheEvict(value = "user", key = "#id")
-    public void deleteById(long id) {
-        userRepository.deleteById(id);
-    }
+    public void create(User user) { userRepository.save(user); } //注册用户
 
     @Override
     public List<User> getAllUsers() {
@@ -58,6 +41,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByNameAndPassword(name, password);
     }
 
-
+    @Override
+    public List<User> getDeveloper(String superior) {
+        return userRepository.findBySuperior(superior);
+    }
 
 }
